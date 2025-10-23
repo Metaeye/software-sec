@@ -37,8 +37,8 @@
 
 1. **克隆项目**
    ```bash
-   git clone <repository-url>
-   cd openai-chat-app
+   git clone https://github.com/Metaeye/software-sec.git
+   cd software-sec
    ```
 
 2. **安装依赖**
