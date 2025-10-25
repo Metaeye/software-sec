@@ -27,20 +27,20 @@ export class FilePanel {
 
         container.innerHTML = `
       <div class="h-full bg-white flex flex-col">
-        <!-- 头部 -->
+        <!-- Header -->
         <div class="border-b border-gray-200 p-6">
           <div class="flex items-center justify-between">
             <div>
-              <h2 class="text-2xl font-bold text-gray-900">文件管理</h2>
-              <p class="text-gray-600 mt-1">上传和管理您的文档文件</p>
+              <h2 class="text-2xl font-bold text-gray-900">File Management</h2>
+              <p class="text-gray-600 mt-1">Upload and manage your document files</p>
             </div>
             <div class="text-sm text-gray-500">
-              ${this.state.uploadedFiles.length} 个文件
+              ${this.state.uploadedFiles.length} files
             </div>
           </div>
         </div>
 
-        <!-- 上传区域 -->
+        <!-- Upload area -->
         <div class="p-6 border-b border-gray-200">
           <div 
             id="drop-zone" 
@@ -57,20 +57,20 @@ export class FilePanel {
                 <div class="mb-4">
                   <div class="animate-spin rounded-full h-8 w-8 border-2 border-primary-500 border-t-transparent mx-auto"></div>
                 </div>
-                <p class="text-lg font-medium text-gray-700 mb-2">正在上传文件...</p>
+                <p class="text-lg font-medium text-gray-700 mb-2">Uploading files...</p>
                 <div id="upload-progress" class="w-full bg-gray-200 rounded-full h-2 mb-2">
                   <div class="bg-primary-500 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
                 </div>
-                <p class="text-sm text-gray-500" id="upload-status">准备中...</p>
+                <p class="text-sm text-gray-500" id="upload-status">Preparing...</p>
               `
                       : `
-                <p class="text-lg font-medium text-gray-700 mb-2">拖拽文件到此处</p>
-                <p class="text-gray-500 mb-4">或者</p>
+                <p class="text-lg font-medium text-gray-700 mb-2">Drag files here</p>
+                <p class="text-gray-500 mb-4">or</p>
                 <button 
                   id="select-files-btn" 
                   class="btn-primary"
                 >
-                  选择文件
+                  Select Files
                 </button>
                 <input 
                   type="file" 
@@ -80,7 +80,7 @@ export class FilePanel {
                   class="hidden"
                 />
                 <p class="text-xs text-gray-500 mt-3">
-                  支持: TXT, MD, JSON, CSV, HTML, CSS, JS, TS, PY 等文本文件 (最大 10MB)
+                  Supports: TXT, MD, JSON, CSV, HTML, CSS, JS, TS, PY and other text files (max 10MB)
                 </p>
               `
               }
@@ -88,7 +88,7 @@ export class FilePanel {
           </div>
         </div>
 
-        <!-- 文件列表 -->
+        <!-- File list -->
         <div class="flex-1 overflow-hidden">
           <div class="h-full overflow-y-auto scrollbar-thin">
             <div id="file-list" class="p-6">
@@ -103,7 +103,7 @@ export class FilePanel {
     }
 
     /**
-     * 渲染文件列表
+     * Render file list
      */
     renderFileList() {
         if (this.state.uploadedFiles.length === 0) {
@@ -112,8 +112,8 @@ export class FilePanel {
           <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
           </svg>
-          <h3 class="text-lg font-medium text-gray-900 mb-2">暂无文件</h3>
-          <p class="text-gray-500">上传一些文件开始使用吧</p>
+          <h3 class="text-lg font-medium text-gray-900 mb-2">No files</h3>
+          <p class="text-gray-500">Upload some files to get started</p>
         </div>
       `;
         }
@@ -141,7 +141,7 @@ export class FilePanel {
                       class="file-action-btn text-gray-400 hover:text-primary-600 transition-colors"
                       data-action="preview"
                       data-file-id="${file.id}"
-                      title="预览"
+                      title="Preview"
                     >
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -152,7 +152,7 @@ export class FilePanel {
                       class="file-action-btn text-gray-400 hover:text-green-600 transition-colors"
                       data-action="download"
                       data-file-id="${file.id}"
-                      title="下载"
+                      title="Download"
                     >
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-4-4m4 4l4-4m5-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -162,7 +162,7 @@ export class FilePanel {
                       class="file-action-btn text-gray-400 hover:text-red-600 transition-colors"
                       data-action="delete"
                       data-file-id="${file.id}"
-                      title="删除"
+                      title="Delete"
                     >
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
@@ -177,7 +177,7 @@ export class FilePanel {
                   <span>${formatTime(file.uploadedAt)}</span>
                 </div>
                 
-                <!-- 文件预览 -->
+                <!-- File preview -->
                 <div class="bg-gray-50 rounded p-3 text-xs text-gray-600 font-mono">
                   <div class="line-clamp-3">${file.preview}</div>
                 </div>
@@ -192,18 +192,18 @@ export class FilePanel {
     }
 
     /**
-     * 更新内容
+     * Update content
      */
     updateContent() {
         if (!this.container) return;
 
-        // 更新文件计数
+        // Update file count
         const fileCount = this.container.querySelector(".text-sm.text-gray-500");
         if (fileCount) {
-            fileCount.textContent = `${this.state.uploadedFiles.length} 个文件`;
+            fileCount.textContent = `${this.state.uploadedFiles.length} files`;
         }
 
-        // 更新文件列表
+        // Update file list
         const fileList = this.container.querySelector("#file-list");
         if (fileList) {
             fileList.innerHTML = this.renderFileList();
@@ -212,28 +212,28 @@ export class FilePanel {
     }
 
     /**
-     * 绑定事件监听器
+     * Attach event listeners
      */
     attachEventListeners() {
         const dropZone = this.container.querySelector("#drop-zone");
         const fileInput = this.container.querySelector("#file-input");
         const selectFilesBtn = this.container.querySelector("#select-files-btn");
 
-        // 文件选择按钮
+        // File selection button
         if (selectFilesBtn && fileInput) {
             selectFilesBtn.addEventListener("click", () => {
                 fileInput.click();
             });
         }
 
-        // 文件输入变化
+        // File input change
         if (fileInput) {
             fileInput.addEventListener("change", (e) => {
                 this.handleFiles(Array.from(e.target.files));
             });
         }
 
-        // 拖拽事件
+        // Drag events
         if (dropZone) {
             dropZone.addEventListener("dragenter", (e) => {
                 e.preventDefault();
@@ -267,7 +267,7 @@ export class FilePanel {
     }
 
     /**
-     * 绑定文件列表事件
+     * Attach file list events
      */
     attachFileListeners() {
         const fileActionBtns = this.container.querySelectorAll(".file-action-btn");
@@ -294,7 +294,7 @@ export class FilePanel {
     }
 
     /**
-     * 处理文件上传
+     * Handle file upload
      */
     async handleFiles(files) {
         if (files.length === 0) return;
@@ -307,32 +307,32 @@ export class FilePanel {
                 this.updateProgress(progress);
             });
 
-            // 处理结果
+            // Handle results
             const successFiles = results.filter((r) => r.success);
             const failedFiles = results.filter((r) => !r.success);
 
-            // 添加成功的文件
+            // Add successful files
             successFiles.forEach((result) => {
                 appStore.addFile(result.file);
             });
 
-            // 显示错误信息
+            // Show error messages
             if (failedFiles.length > 0) {
                 const errorMessages = failedFiles.map((f) => `${f.fileName}: ${f.error}`);
-                appStore.setError(`部分文件上传失败:\n${errorMessages.join("\n")}`);
+                appStore.setError(`Some files failed to upload:\n${errorMessages.join("\n")}`);
             }
 
-            // 显示成功信息
+            // Show success message
             if (successFiles.length > 0) {
-                this.showSuccessMessage(`成功上传 ${successFiles.length} 个文件`);
+                this.showSuccessMessage(`Successfully uploaded ${successFiles.length} files`);
             }
         } catch (error) {
-            appStore.setError(`文件上传失败: ${error.message}`);
+            appStore.setError(`File upload failed: ${error.message}`);
         } finally {
             this.isUploading = false;
             this.updateUploadUI();
 
-            // 重置文件输入
+            // Reset file input
             const fileInput = this.container.querySelector("#file-input");
             if (fileInput) {
                 fileInput.value = "";
@@ -341,7 +341,7 @@ export class FilePanel {
     }
 
     /**
-     * 更新上传UI
+     * Update upload UI
      */
     updateUploadUI() {
         const dropZone = this.container.querySelector("#drop-zone");
@@ -355,7 +355,7 @@ export class FilePanel {
     }
 
     /**
-     * 更新上传进度
+     * Update upload progress
      */
     updateProgress(progress) {
         const progressBar = this.container.querySelector("#upload-progress .bg-primary-500");
@@ -366,18 +366,18 @@ export class FilePanel {
         }
 
         if (statusText) {
-            statusText.textContent = `上传进度: ${progress}%`;
+            statusText.textContent = `Upload progress: ${progress}%`;
         }
     }
 
     /**
-     * 预览文件
+     * Preview file
      */
     previewFile(fileId) {
         const file = this.state.uploadedFiles.find((f) => f.id === fileId);
         if (!file) return;
 
-        // 创建预览模态框
+        // Create preview modal
         const modal = document.createElement("div");
         modal.className = "fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50";
         modal.innerHTML = `
@@ -398,7 +398,7 @@ export class FilePanel {
 
         document.body.appendChild(modal);
 
-        // 绑定关闭事件
+        // Bind close events
         const closeBtn = modal.querySelector("#close-preview");
         const closeModal = () => {
             document.body.removeChild(modal);
@@ -419,7 +419,7 @@ export class FilePanel {
     }
 
     /**
-     * 下载文件
+     * Download file
      */
     downloadFile(fileId) {
         const file = this.state.uploadedFiles.find((f) => f.id === fileId);
@@ -429,19 +429,19 @@ export class FilePanel {
     }
 
     /**
-     * 删除文件
+     * Delete file
      */
     deleteFile(fileId) {
         const file = this.state.uploadedFiles.find((f) => f.id === fileId);
         if (!file) return;
 
-        if (confirm(`确定要删除文件 "${file.name}" 吗？`)) {
+        if (confirm(`Are you sure you want to delete file "${file.name}"?`)) {
             appStore.removeFile(fileId);
         }
     }
 
     /**
-     * 显示成功消息
+     * Show success message
      */
     showSuccessMessage(message) {
         const successToast = document.createElement("div");
@@ -464,7 +464,7 @@ export class FilePanel {
     }
 
     /**
-     * 销毁组件
+     * Destroy component
      */
     destroy() {
         if (this.unsubscribe) {

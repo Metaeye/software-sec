@@ -15,7 +15,7 @@ export class ErrorToast {
     }
 
     /**
-     * 渲染错误提示
+     * Render error toast
      */
     render(container) {
         this.container = container;
@@ -35,7 +35,7 @@ export class ErrorToast {
               </svg>
             </div>
             <div class="flex-1">
-              <h4 class="font-medium">错误</h4>
+              <h4 class="font-medium">Error</h4>
               <p class="text-sm mt-1 opacity-90" id="error-message">
                 ${this.state.error || ""}
               </p>
@@ -57,7 +57,7 @@ export class ErrorToast {
     }
 
     /**
-     * 更新显示状态
+     * Update visibility
      */
     updateVisibility() {
         if (!this.container) return;
@@ -82,7 +82,7 @@ export class ErrorToast {
     }
 
     /**
-     * 绑定事件监听器
+     * Attach event listeners
      */
     attachEventListeners() {
         const closeBtn = this.container.querySelector("#close-error-toast");
@@ -92,7 +92,7 @@ export class ErrorToast {
             });
         }
 
-        // 点击外部区域关闭
+        // Close when clicking outside
         const toastContent = this.container.querySelector("#error-toast-content");
         if (toastContent) {
             document.addEventListener("click", (e) => {
@@ -102,7 +102,7 @@ export class ErrorToast {
             });
         }
 
-        // ESC键关闭
+        // Close with ESC key
         document.addEventListener("keydown", (e) => {
             if (e.key === "Escape" && this.state.error) {
                 appStore.setError(null);
@@ -111,7 +111,7 @@ export class ErrorToast {
     }
 
     /**
-     * 销毁组件
+     * Destroy component
      */
     destroy() {
         if (this.unsubscribe) {

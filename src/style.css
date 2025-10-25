@@ -19,7 +19,7 @@
   }
   
   .message-bubble {
-    @apply max-w-xs lg:max-w-md px-4 py-2 rounded-lg break-words;
+    @apply w-full;
   }
   
   .message-user {
@@ -87,17 +87,49 @@
   
   /* 文件上传按钮在移动端的优化 */
   #file-upload-btn {
-    @apply min-w-[44px] min-h-[44px] p-3;
+    @apply min-w-[44px] min-h-[44px] p-2;
   }
   
   /* 发送按钮在移动端的优化 */
   #send-btn {
-    @apply min-w-[44px] min-h-[44px] px-3 py-3;
+    @apply min-w-[44px] min-h-[44px] px-3 py-2;
   }
   
   /* 输入框在移动端的优化 */
   #message-input {
     @apply text-base; /* 防止iOS缩放 */
+  }
+  
+  /* 输入区域布局优化 */
+  .flex.items-end.space-x-3 {
+    @apply items-center;
+  }
+  
+  /* 确保输入框和按钮在同一行 */
+  .flex.items-end.space-x-3 > div:first-child {
+    @apply flex-1;
+  }
+  
+  .flex.items-end.space-x-3 > button:last-child {
+    @apply flex-shrink-0;
+  }
+  
+  /* 强制输入区域布局 - 确保在所有情况下都正确显示 */
+  .border-t.border-gray-200 .flex {
+    align-items: center !important;
+  }
+  
+  .border-t.border-gray-200 .flex > div:first-child {
+    flex: 1 1 0% !important;
+    position: relative !important;
+  }
+  
+  .border-t.border-gray-200 .flex > button:last-child {
+    flex-shrink: 0 !important;
+    height: 2.75rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
   
   /* 上传进度区域在移动端的优化 */
@@ -118,6 +150,19 @@
   /* 快速建议按钮在移动端的优化 */
   .suggestion-btn {
     @apply min-h-[60px] p-4;
+  }
+  
+  /* 聊天历史项删除按钮优化 */
+  .chat-history-item:hover .delete-conversation-btn {
+    @apply opacity-100;
+  }
+  
+  .delete-conversation-btn {
+    @apply opacity-30 transition-opacity duration-200;
+  }
+  
+  .delete-conversation-btn:hover {
+    @apply opacity-100;
   }
 }
 
