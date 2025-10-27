@@ -1,0 +1,186 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 自定义组件样式 */
+@layer components {
+  .btn-primary {
+    @apply bg-primary-500 hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+  }
+  
+  .input-field {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all duration-200;
+  }
+  
+  .message-bubble {
+    @apply w-full;
+  }
+  
+  .message-user {
+    @apply bg-primary-500 text-white ml-auto;
+  }
+  
+  .message-assistant {
+    @apply bg-gray-100 text-gray-800 mr-auto;
+  }
+  
+  .sidebar {
+    @apply w-80 bg-white border-r border-gray-200 flex flex-col;
+  }
+  
+  .chat-container {
+    @apply flex-1 flex flex-col bg-gray-50;
+  }
+}
+
+/* 滚动条样式 */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* 文件拖拽区域样式 */
+.drag-area {
+  @apply border-2 border-dashed border-gray-300 rounded-lg p-8 text-center transition-colors duration-200;
+}
+
+.drag-area.drag-over {
+  @apply border-primary-500 bg-primary-50;
+}
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+  /* 确保触控按钮足够大 */
+  .touch-manipulation {
+    touch-action: manipulation;
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  /* 文件上传按钮在移动端的优化 */
+  #file-upload-btn {
+    @apply min-w-[44px] min-h-[44px] p-2;
+  }
+  
+  /* 发送按钮在移动端的优化 */
+  #send-btn {
+    @apply min-w-[44px] min-h-[44px] px-3 py-2;
+  }
+  
+  /* 输入框在移动端的优化 */
+  #message-input {
+    @apply text-base; /* 防止iOS缩放 */
+  }
+  
+  /* 输入区域布局优化 */
+  .flex.items-end.space-x-3 {
+    @apply items-center;
+  }
+  
+  /* 确保输入框和按钮在同一行 */
+  .flex.items-end.space-x-3 > div:first-child {
+    @apply flex-1;
+  }
+  
+  .flex.items-end.space-x-3 > button:last-child {
+    @apply flex-shrink-0;
+  }
+  
+  /* 强制输入区域布局 - 确保在所有情况下都正确显示 */
+  .border-t.border-gray-200 .flex {
+    align-items: center !important;
+  }
+  
+  .border-t.border-gray-200 .flex > div:first-child {
+    flex: 1 1 0% !important;
+    position: relative !important;
+  }
+  
+  .border-t.border-gray-200 .flex > button:last-child {
+    flex-shrink: 0 !important;
+    height: 2.75rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  /* 上传进度区域在移动端的优化 */
+  #upload-progress {
+    @apply mx-2;
+  }
+  
+  /* 文件项在移动端的优化 */
+  .upload-file-item {
+    @apply p-3;
+  }
+  
+  /* 消息气泡在移动端的优化 */
+  .message-bubble {
+    @apply max-w-[85%];
+  }
+  
+  /* 快速建议按钮在移动端的优化 */
+  .suggestion-btn {
+    @apply min-h-[60px] p-4;
+  }
+  
+  /* 聊天历史项删除按钮优化 */
+  .chat-history-item:hover .delete-conversation-btn {
+    @apply opacity-100;
+  }
+  
+  .delete-conversation-btn {
+    @apply opacity-30 transition-opacity duration-200;
+  }
+  
+  .delete-conversation-btn:hover {
+    @apply opacity-100;
+  }
+}
+
+/* 高分辨率屏幕优化 */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .btn-primary, .btn-secondary {
+    @apply border border-transparent;
+  }
+}
+
+/* 横屏模式优化 */
+@media (orientation: landscape) and (max-height: 500px) {
+  /* 在横屏模式下减少垂直间距 */
+  .chat-container {
+    @apply space-y-2;
+  }
+  
+  #upload-progress {
+    @apply py-2;
+  }
+}
