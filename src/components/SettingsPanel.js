@@ -24,16 +24,26 @@ export class SettingsPanel {
         this.container = container;
 
         container.innerHTML = `
-      <div class="h-full bg-white">
-        <div class="max-w-2xl mx-auto p-6">
-          <!-- 页面标题 -->
-          <div class="mb-8">
-            <h2 class="text-2xl font-bold text-gray-900 mb-2">设置</h2>
-            <p class="text-gray-600">配置您的API密钥和偏好设置</p>
+      <div class="h-full bg-white flex flex-col">
+        <!-- Header -->
+        <div class="border-b border-gray-200 p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-2xl font-bold text-gray-900">Settings</h2>
+              <p class="text-gray-600 mt-1">Configure your API key and preferences</p>
+            </div>
+            <div class="text-sm text-gray-500">
+              ${this.state.apiKey ? "API Connected" : "API Not Configured"}
+            </div>
           </div>
+        </div>
 
-          <!-- API配置 -->
-          <div class="bg-white border border-gray-200 rounded-lg p-6 mb-6">
+        <!-- Content -->
+        <div class="flex-1 overflow-y-auto">
+          <div class="max-w-2xl mx-auto p-6">
+
+          <!-- API configuration -->
+          <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-6">
             <div class="flex items-center space-x-3 mb-4">
               <div class="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
                 <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -41,15 +51,15 @@ export class SettingsPanel {
                 </svg>
               </div>
               <div>
-                <h3 class="text-lg font-semibold text-gray-900">OpenAI API 配置</h3>
-                <p class="text-sm text-gray-600">配置您的OpenAI API密钥以开始使用</p>
+                <h3 class="text-lg font-semibold text-gray-900">OpenAI API Configuration</h3>
+                <p class="text-sm text-gray-600">Configure your OpenAI API key to get started</p>
               </div>
             </div>
 
             <form id="api-key-form" class="space-y-4">
               <div>
                 <label for="api-key" class="block text-sm font-medium text-gray-700 mb-2">
-                  API 密钥
+                  API Key
                 </label>
                 <div class="relative">
                   <input
@@ -72,7 +82,7 @@ export class SettingsPanel {
                   </button>
                 </div>
                 <p class="text-xs text-gray-500 mt-1">
-                  您的API密钥将安全地存储在本地浏览器中
+                  Your API key will be securely stored in your local browser
                 </p>
               </div>
 
@@ -87,13 +97,13 @@ export class SettingsPanel {
                       this.isValidating
                           ? `
                     <div class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                    <span>验证中...</span>
+                    <span>Validating...</span>
                   `
                           : `
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                     </svg>
-                    <span>保存并验证</span>
+                    <span>Save and Verify</span>
                   `
                   }
                 </button>
@@ -109,7 +119,7 @@ export class SettingsPanel {
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
-                    <span>测试连接</span>
+                    <span>Test Connection</span>
                   </button>
                 `
                         : ""
@@ -122,14 +132,14 @@ export class SettingsPanel {
               }">
                 <div class="w-2 h-2 rounded-full ${this.state.apiKey ? "bg-green-500" : "bg-yellow-500"}"></div>
                 <span class="text-sm ${this.state.apiKey ? "text-green-700" : "text-yellow-700"}">
-                  ${this.state.apiKey ? "API密钥已配置" : "API密钥未配置"}
+                  ${this.state.apiKey ? "API Key Configured" : "API Key Not Configured"}
                 </span>
               </div>
             </form>
           </div>
 
-          <!-- 模型配置 -->
-          <div class="bg-white border border-gray-200 rounded-lg p-6 mb-6">
+          <!-- Model configuration -->
+          <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-6">
             <div class="flex items-center space-x-3 mb-4">
               <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                 <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -137,19 +147,19 @@ export class SettingsPanel {
                 </svg>
               </div>
               <div>
-                <h3 class="text-lg font-semibold text-gray-900">模型设置</h3>
-                <p class="text-sm text-gray-600">选择您偏好的AI模型</p>
+                <h3 class="text-lg font-semibold text-gray-900">Model Settings</h3>
+                <p class="text-sm text-gray-600">Choose your preferred AI model</p>
               </div>
             </div>
 
             <div class="space-y-4">
               <div>
                 <label for="model-select" class="block text-sm font-medium text-gray-700 mb-2">
-                  默认模型
+                  Default Model
                 </label>
                 <select id="model-select" class="input-field">
                   <option value="gpt-3.5-turbo" ${this.state.currentModel === "gpt-3.5-turbo" ? "selected" : ""}>
-                    GPT-3.5 Turbo (推荐)
+                    GPT-3.5 Turbo (Recommended)
                   </option>
                   <option value="gpt-4" ${this.state.currentModel === "gpt-4" ? "selected" : ""}>
                     GPT-4
@@ -164,8 +174,8 @@ export class SettingsPanel {
             </div>
           </div>
 
-          <!-- 数据管理 -->
-          <div class="bg-white border border-gray-200 rounded-lg p-6">
+          <!-- Data management -->
+          <div class="bg-gray-50 border border-gray-200 rounded-lg p-6">
             <div class="flex items-center space-x-3 mb-4">
               <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
                 <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -173,8 +183,8 @@ export class SettingsPanel {
                 </svg>
               </div>
               <div>
-                <h3 class="text-lg font-semibold text-gray-900">数据管理</h3>
-                <p class="text-sm text-gray-600">管理您的聊天记录和文件</p>
+                <h3 class="text-lg font-semibold text-gray-900">Data Management</h3>
+                <p class="text-sm text-gray-600">Manage your chat history and files</p>
               </div>
             </div>
 
@@ -186,7 +196,7 @@ export class SettingsPanel {
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                 </svg>
-                <span>清除所有聊天记录</span>
+                <span>Clear All Chat History</span>
               </button>
 
               <button
@@ -196,9 +206,10 @@ export class SettingsPanel {
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
                 </svg>
-                <span>清除所有上传文件</span>
+                <span>Clear All Uploaded Files</span>
               </button>
             </div>
+          </div>
           </div>
         </div>
       </div>
@@ -208,18 +219,18 @@ export class SettingsPanel {
     }
 
     /**
-     * 更新内容
+     * Update content
      */
     updateContent() {
         if (!this.container) return;
 
-        // 更新API密钥输入框
+        // Update API key input
         const apiKeyInput = this.container.querySelector("#api-key");
         if (apiKeyInput && apiKeyInput.value !== this.state.apiKey) {
             apiKeyInput.value = this.state.apiKey;
         }
 
-        // 更新模型选择
+        // Update model selection
         const modelSelect = this.container.querySelector("#model-select");
         if (modelSelect) {
             modelSelect.value = this.state.currentModel;
@@ -227,10 +238,10 @@ export class SettingsPanel {
     }
 
     /**
-     * 绑定事件监听器
+     * Attach event listeners
      */
     attachEventListeners() {
-        // API密钥表单提交
+        // API key form submission
         const apiKeyForm = this.container.querySelector("#api-key-form");
         if (apiKeyForm) {
             apiKeyForm.addEventListener("submit", async (e) => {
@@ -239,7 +250,7 @@ export class SettingsPanel {
             });
         }
 
-        // 切换API密钥显示/隐藏
+        // Toggle API key visibility
         const toggleApiKey = this.container.querySelector("#toggle-api-key");
         const apiKeyInput = this.container.querySelector("#api-key");
         if (toggleApiKey && apiKeyInput) {
@@ -261,7 +272,7 @@ export class SettingsPanel {
             });
         }
 
-        // 测试API连接
+        // Test API connection
         const testApiKey = this.container.querySelector("#test-api-key");
         if (testApiKey) {
             testApiKey.addEventListener("click", async () => {
@@ -269,7 +280,7 @@ export class SettingsPanel {
             });
         }
 
-        // 模型选择
+        // Model selection
         const modelSelect = this.container.querySelector("#model-select");
         if (modelSelect) {
             modelSelect.addEventListener("change", (e) => {
@@ -277,21 +288,21 @@ export class SettingsPanel {
             });
         }
 
-        // 清除聊天记录
+        // Clear chat history
         const clearMessages = this.container.querySelector("#clear-messages");
         if (clearMessages) {
             clearMessages.addEventListener("click", () => {
-                if (confirm("确定要清除所有聊天记录吗？此操作不可撤销。")) {
+                if (confirm("Are you sure you want to clear all chat history? This action cannot be undone.")) {
                     appStore.clearMessages();
                 }
             });
         }
 
-        // 清除文件
+        // Clear files
         const clearFiles = this.container.querySelector("#clear-files");
         if (clearFiles) {
             clearFiles.addEventListener("click", () => {
-                if (confirm("确定要清除所有上传的文件吗？此操作不可撤销。")) {
+                if (confirm("Are you sure you want to clear all uploaded files? This action cannot be undone.")) {
                     appStore.setState({ uploadedFiles: [] });
                 }
             });
@@ -299,19 +310,19 @@ export class SettingsPanel {
     }
 
     /**
-     * 处理API密钥提交
+     * Handle API key submission
      */
     async handleApiKeySubmit() {
         const apiKeyInput = this.container.querySelector("#api-key");
         const apiKey = apiKeyInput.value.trim();
 
         if (!apiKey) {
-            appStore.setError("请输入API密钥");
+            appStore.setError("Please enter API key");
             return;
         }
 
         if (!apiKey.startsWith("sk-")) {
-            appStore.setError("API密钥格式不正确，应以 sk- 开头");
+            appStore.setError("API key format is incorrect, should start with sk-");
             return;
         }
 
@@ -319,7 +330,7 @@ export class SettingsPanel {
         this.updateSaveButton();
 
         try {
-            // 验证API密钥
+            // Validate API key
             const isValid = await openaiService.validateApiKey(apiKey);
 
             if (isValid) {
@@ -327,13 +338,13 @@ export class SettingsPanel {
                 openaiService.setApiKey(apiKey);
                 appStore.setError(null);
 
-                // 显示成功消息
-                this.showSuccessMessage("API密钥验证成功！");
+                // Show success message
+                this.showSuccessMessage("API key verification successful!");
             } else {
-                appStore.setError("API密钥验证失败，请检查密钥是否正确");
+                appStore.setError("API key verification failed, please check if the key is correct");
             }
         } catch (error) {
-            appStore.setError(`API密钥验证失败: ${error.message}`);
+            appStore.setError(`API key verification failed: ${error.message}`);
         } finally {
             this.isValidating = false;
             this.updateSaveButton();
@@ -341,11 +352,11 @@ export class SettingsPanel {
     }
 
     /**
-     * 测试API连接
+     * Test API connection
      */
     async testApiConnection() {
         if (!this.state.apiKey) {
-            appStore.setError("请先配置API密钥");
+            appStore.setError("Please configure API key first");
             return;
         }
 
@@ -355,17 +366,17 @@ export class SettingsPanel {
             const response = await openaiService.sendMessage([{ role: "user", content: "Hello" }], { maxTokens: 5 });
 
             if (response) {
-                this.showSuccessMessage("API连接测试成功！");
+                this.showSuccessMessage("API connection test successful!");
             }
         } catch (error) {
-            appStore.setError(`API连接测试失败: ${error.message}`);
+            appStore.setError(`API connection test failed: ${error.message}`);
         } finally {
             appStore.setLoading(false);
         }
     }
 
     /**
-     * 更新保存按钮状态
+     * Update save button status
      */
     updateSaveButton() {
         const saveBtn = this.container.querySelector("#save-api-key");
@@ -374,22 +385,22 @@ export class SettingsPanel {
             saveBtn.innerHTML = this.isValidating
                 ? `
         <div class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-        <span>验证中...</span>
+        <span>Validating...</span>
       `
                 : `
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
         </svg>
-        <span>保存并验证</span>
+        <span>Save and Verify</span>
       `;
         }
     }
 
     /**
-     * 显示成功消息
+     * Show success message
      */
     showSuccessMessage(message) {
-        // 创建临时成功提示
+        // Create temporary success toast
         const successToast = document.createElement("div");
         successToast.className =
             "fixed top-4 right-4 z-50 bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg transform transition-all duration-300";
@@ -410,7 +421,7 @@ export class SettingsPanel {
     }
 
     /**
-     * 销毁组件
+     * Destroy component
      */
     destroy() {
         if (this.unsubscribe) {

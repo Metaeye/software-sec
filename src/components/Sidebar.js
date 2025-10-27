@@ -32,7 +32,7 @@ export class Sidebar {
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                 </svg>
               </div>
-              <span class="font-semibold text-gray-800">AI 助手</span>
+              <span class="font-semibold text-gray-800">AI Assistant</span>
             </div>
           </div>
           
@@ -43,11 +43,11 @@ export class Sidebar {
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
             </svg>
-            <span>新建对话</span>
+            <span>New Chat</span>
           </button>
         </div>
 
-        <!-- 导航菜单 -->
+        <!-- Navigation menu -->
         <div class="p-4 border-b border-gray-200">
           <nav class="space-y-2">
             <button 
@@ -61,7 +61,7 @@ export class Sidebar {
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
               </svg>
-              <span>对话</span>
+              <span>Chat</span>
             </button>
             
             <button 
@@ -75,7 +75,7 @@ export class Sidebar {
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
               </svg>
-              <span>文件</span>
+              <span>Files</span>
               ${
                   this.state.uploadedFiles.length > 0
                       ? `
@@ -99,28 +99,28 @@ export class Sidebar {
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
               </svg>
-              <span>设置</span>
+              <span>Settings</span>
             </button>
           </nav>
         </div>
 
-        <!-- 聊天历史 -->
+        <!-- Chat history -->
         <div class="flex-1 overflow-hidden">
           <div class="p-4">
-            <h3 class="text-sm font-medium text-gray-500 mb-3">聊天历史</h3>
+            <h3 class="text-sm font-medium text-gray-500 mb-3">Chat History</h3>
             <div id="chat-history" class="space-y-2 max-h-96 overflow-y-auto scrollbar-thin">
               ${this.renderChatHistory()}
             </div>
           </div>
         </div>
 
-        <!-- 底部状态 -->
+        <!-- Bottom status -->
         <div class="p-4 border-t border-gray-200">
           <div class="flex items-center justify-between text-sm text-gray-500">
-            <span>消息数: ${this.state.messages.length}</span>
+            <span>Messages: ${this.state.messages.length}</span>
             <div class="flex items-center space-x-1">
               <div class="w-2 h-2 rounded-full ${this.state.apiKey ? "bg-green-500" : "bg-red-500"}"></div>
-              <span>${this.state.apiKey ? "已连接" : "未连接"}</span>
+              <span>${this.state.apiKey ? "Connected" : "Disconnected"}</span>
             </div>
           </div>
         </div>
@@ -131,27 +131,27 @@ export class Sidebar {
     }
 
     /**
-     * 渲染聊天历史
+     * Render chat history
      */
     renderChatHistory() {
-        if (this.state.messages.length === 0) {
+        if (this.state.conversations.length === 0) {
             return `
         <div class="text-center text-gray-400 py-8">
           <svg class="w-12 h-12 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
           </svg>
-          <p class="text-sm">暂无聊天记录</p>
+          <p class="text-sm">No chat history</p>
         </div>
       `;
         }
 
-        // 按对话分组消息
-        const conversations = this.groupMessagesByConversation();
-
-        return conversations
+        return this.state.conversations
+            .sort((a, b) => b.updatedAt - a.updatedAt) // 按更新时间排序，最新的在前
             .map(
                 (conversation) => `
-      <div class="chat-history-item p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors border border-transparent hover:border-gray-200">
+      <div class="chat-history-item p-3 rounded-lg hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-200 ${
+          this.state.currentConversationId === conversation.id ? 'bg-primary-50 border-primary-200' : ''
+      }" data-conversation-id="${conversation.id}">
         <div class="flex items-start space-x-3">
           <div class="flex-shrink-0">
             <div class="w-8 h-8 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
@@ -160,16 +160,28 @@ export class Sidebar {
               </svg>
             </div>
           </div>
-          <div class="flex-1 min-w-0">
+          <div class="flex-1 min-w-0 cursor-pointer" data-action="load-conversation">
             <p class="text-sm font-medium text-gray-800 truncate">
               ${conversation.title}
             </p>
             <p class="text-xs text-gray-500 mt-1">
-              ${formatTime(conversation.timestamp)}
+              ${formatTime(conversation.updatedAt)}
             </p>
             <p class="text-xs text-gray-400 mt-1">
-              ${conversation.messageCount} 条消息
+              ${conversation.messages.length} messages
             </p>
+          </div>
+          <div class="flex-shrink-0">
+            <button 
+              class="delete-conversation-btn p-1 text-gray-400 hover:text-red-600 transition-colors rounded"
+              data-action="delete-conversation"
+              data-conversation-id="${conversation.id}"
+              title="Delete conversation"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+              </svg>
+            </button>
           </div>
         </div>
       </div>
@@ -179,26 +191,38 @@ export class Sidebar {
     }
 
     /**
-     * 按对话分组消息
+     * Group messages by conversation
      */
     groupMessagesByConversation() {
         const conversations = [];
         let currentConversation = null;
+        let conversationId = 0;
 
         this.state.messages.forEach((message, index) => {
-            if (message.role === "user") {
+            // 检查是否是对话的开始
+            // 新对话开始的条件：
+            // 1. 是用户消息
+            // 2. 且（没有当前对话 或 当前对话已经完整结束）
+            const isNewConversation = message.role === "user" && 
+                (!currentConversation || 
+                 this.isConversationComplete(currentConversation));
+
+            if (isNewConversation) {
+                // 保存当前对话
                 if (currentConversation) {
                     conversations.push(currentConversation);
                 }
 
+                // 开始新对话
                 currentConversation = {
-                    id: `conv_${index}`,
+                    id: `conv_${conversationId++}`,
                     title: message.content.substring(0, 30) + (message.content.length > 30 ? "..." : ""),
                     timestamp: message.timestamp || Date.now(),
                     messageCount: 1,
                     messages: [message],
                 };
             } else if (currentConversation) {
+                // 添加到当前对话
                 currentConversation.messageCount++;
                 currentConversation.messages.push(message);
             }
@@ -208,16 +232,25 @@ export class Sidebar {
             conversations.push(currentConversation);
         }
 
-        return conversations.reverse(); // 最新的在前面
+        return conversations.reverse(); // Latest first
     }
 
     /**
-     * 更新内容
+     * 检查对话是否完整（以助手消息结束）
+     */
+    isConversationComplete(conversation) {
+        if (!conversation || conversation.messages.length === 0) return false;
+        const lastMessage = conversation.messages[conversation.messages.length - 1];
+        return lastMessage.role === "assistant";
+    }
+
+    /**
+     * Update content
      */
     updateContent() {
         if (!this.container) return;
 
-        // 更新导航状态
+        // Update navigation state
         const navItems = this.container.querySelectorAll(".nav-item");
         navItems.forEach((item) => {
             const isActive =
@@ -238,13 +271,14 @@ export class Sidebar {
             }
         });
 
-        // 更新聊天历史
+        // Update chat history
         const chatHistory = this.container.querySelector("#chat-history");
         if (chatHistory) {
             chatHistory.innerHTML = this.renderChatHistory();
+            this.attachChatHistoryListeners();
         }
 
-        // 更新文件数量
+        // Update file count
         const filesNav = this.container.querySelector("#nav-files");
         if (filesNav && this.state.uploadedFiles.length > 0) {
             const badge = filesNav.querySelector(".bg-primary-100");
@@ -253,27 +287,27 @@ export class Sidebar {
             }
         }
 
-        // 更新底部状态
+        // Update bottom status
         const messageCount = this.container.querySelector(".p-4.border-t span");
         if (messageCount) {
-            messageCount.textContent = `消息数: ${this.state.messages.length}`;
+            messageCount.textContent = `Messages: ${this.state.messages.length}`;
         }
     }
 
     /**
-     * 绑定事件监听器
+     * Attach event listeners
      */
     attachEventListeners() {
-        // 新建对话
+        // New chat
         const newChatBtn = this.container.querySelector("#new-chat-btn");
         if (newChatBtn) {
             newChatBtn.addEventListener("click", () => {
-                appStore.clearMessages();
+                appStore.startNewChat();
                 appStore.setCurrentView("chat");
             });
         }
 
-        // 导航菜单
+        // Navigation menu
         const navChat = this.container.querySelector("#nav-chat");
         if (navChat) {
             navChat.addEventListener("click", () => {
@@ -295,18 +329,65 @@ export class Sidebar {
             });
         }
 
-        // 聊天历史项点击
+        this.attachChatHistoryListeners();
+    }
+
+    /**
+     * Attach chat history listeners
+     */
+    attachChatHistoryListeners() {
         const historyItems = this.container.querySelectorAll(".chat-history-item");
         historyItems.forEach((item) => {
-            item.addEventListener("click", () => {
-                appStore.setCurrentView("chat");
-                // 这里可以添加加载特定对话的逻辑
-            });
+            // 处理对话加载点击
+            const loadArea = item.querySelector('[data-action="load-conversation"]');
+            if (loadArea) {
+                loadArea.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const conversationId = item.dataset.conversationId;
+                    console.log("Clicked conversation:", conversationId); // 调试信息
+                    
+                    if (conversationId) {
+                        appStore.loadConversation(conversationId);
+                        appStore.setCurrentView("chat");
+                    }
+                });
+            }
+
+            // 处理删除按钮点击
+            const deleteBtn = item.querySelector('[data-action="delete-conversation"]');
+            if (deleteBtn) {
+                deleteBtn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const conversationId = deleteBtn.dataset.conversationId;
+                    console.log("Delete button clicked for conversation:", conversationId); // 调试信息
+                    
+                    if (conversationId) {
+                        this.deleteConversation(conversationId);
+                    }
+                });
+            }
         });
     }
 
     /**
-     * 销毁组件
+     * Delete conversation
+     */
+    deleteConversation(conversationId) {
+        console.log("Attempting to delete conversation:", conversationId); // 调试信息
+        if (confirm("Are you sure you want to delete this conversation? This action cannot be undone.")) {
+            console.log("User confirmed deletion"); // 调试信息
+            appStore.deleteConversation(conversationId);
+        } else {
+            console.log("User cancelled deletion"); // 调试信息
+        }
+    }
+
+    /**
+     * Destroy component
      */
     destroy() {
         if (this.unsubscribe) {

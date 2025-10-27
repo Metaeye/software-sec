@@ -29,7 +29,7 @@ export class ChatContainer {
 
         container.innerHTML = `
       <div class="h-full bg-white flex flex-col">
-        <!-- 聊天头部 -->
+        <!-- Chat header -->
         <div class="border-b border-gray-200 p-4">
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-3">
@@ -39,27 +39,27 @@ export class ChatContainer {
                 </svg>
               </div>
               <div>
-                <h2 class="text-lg font-semibold text-gray-900">AI 助手</h2>
+                <h2 class="text-lg font-semibold text-gray-900">AI Assistant</h2>
                 <p class="text-sm text-gray-500">
-                  ${this.state.apiKey ? `模型: ${this.state.currentModel}` : "请先配置 API Key"}
+                  ${this.state.apiKey ? `Model: ${this.state.currentModel}` : "Please configure API Key first"}
                 </p>
               </div>
             </div>
             
             <div class="flex items-center space-x-2">
-              <!-- 连接状态 -->
+              <!-- Connection status -->
               <div class="flex items-center space-x-2">
                 <div class="w-2 h-2 rounded-full ${this.state.apiKey ? "bg-green-500" : "bg-red-500"}"></div>
                 <span class="text-xs text-gray-500">
-                  ${this.state.apiKey ? "已连接" : "未连接"}
+                  ${this.state.apiKey ? "Connected" : "Disconnected"}
                 </span>
               </div>
               
-              <!-- 清空对话按钮 -->
+              <!-- Clear chat button -->
               <button 
                 id="clear-chat-btn" 
                 class="text-gray-400 hover:text-red-600 transition-colors p-2 rounded-lg hover:bg-gray-100"
-                title="清空对话"
+                title="Clear chat"
                 ${this.state.messages.length === 0 ? "disabled" : ""}
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -70,16 +70,16 @@ export class ChatContainer {
           </div>
         </div>
 
-        <!-- 消息列表 -->
+        <!-- Message list -->
         <div class="flex-1 overflow-hidden">
           <div id="messages-container" class="h-full overflow-y-auto scrollbar-thin">
-            <div id="messages-list" class="p-4 space-y-4">
+            <div id="messages-list" class="p-4 space-y-4 max-w-4xl mx-auto">
               ${this.renderMessages()}
             </div>
           </div>
         </div>
 
-        <!-- 输入区域 -->
+        <!-- Input area -->
         <div class="border-t border-gray-200 p-4">
           ${this.renderInputArea()}
         </div>
@@ -91,7 +91,7 @@ export class ChatContainer {
     }
 
     /**
-     * 渲染消息列表
+     * Render message list
      */
     renderMessages() {
         if (this.state.messages.length === 0) {
@@ -102,10 +102,10 @@ export class ChatContainer {
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
             </svg>
           </div>
-          <h3 class="text-lg font-medium text-gray-900 mb-2">开始新对话</h3>
-          <p class="text-gray-500 mb-6">向 AI 助手提问任何问题，或上传文件进行分析</p>
+          <h3 class="text-lg font-medium text-gray-900 mb-2">Start a new conversation</h3>
+          <p class="text-gray-500 mb-6">Ask the AI assistant any questions, or upload files for analysis</p>
           
-          <!-- 快速开始建议 -->
+          <!-- Quick start suggestions -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-2xl mx-auto">
             <button class="suggestion-btn text-left p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors">
               <div class="flex items-start space-x-3">
@@ -113,8 +113,8 @@ export class ChatContainer {
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
                 </svg>
                 <div>
-                  <p class="font-medium text-gray-900">解释概念</p>
-                  <p class="text-sm text-gray-500">让我解释复杂的概念或技术</p>
+                  <p class="font-medium text-gray-900">Explain concepts</p>
+                  <p class="text-sm text-gray-500">Let me explain complex concepts or technologies</p>
                 </div>
               </div>
             </button>
@@ -125,8 +125,8 @@ export class ChatContainer {
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
                 </svg>
                 <div>
-                  <p class="font-medium text-gray-900">代码帮助</p>
-                  <p class="text-sm text-gray-500">编写、调试或优化代码</p>
+                  <p class="font-medium text-gray-900">Code help</p>
+                  <p class="text-sm text-gray-500">Write, debug or optimize code</p>
                 </div>
               </div>
             </button>
@@ -137,8 +137,8 @@ export class ChatContainer {
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
                 <div>
-                  <p class="font-medium text-gray-900">文档分析</p>
-                  <p class="text-sm text-gray-500">上传文件进行内容分析</p>
+                  <p class="font-medium text-gray-900">Document analysis</p>
+                  <p class="text-sm text-gray-500">Upload files for content analysis</p>
                 </div>
               </div>
             </button>
@@ -149,8 +149,8 @@ export class ChatContainer {
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                 </svg>
                 <div>
-                  <p class="font-medium text-gray-900">创意写作</p>
-                  <p class="text-sm text-gray-500">帮助创作文章、故事或方案</p>
+                  <p class="font-medium text-gray-900">Creative writing</p>
+                  <p class="text-sm text-gray-500">Help create articles, stories or proposals</p>
                 </div>
               </div>
             </button>
@@ -163,7 +163,7 @@ export class ChatContainer {
     }
 
     /**
-     * 渲染单个消息
+     * Render single message
      */
     renderMessage(message) {
         const isUser = message.role === "user";
@@ -171,7 +171,7 @@ export class ChatContainer {
 
         return `
       <div class="message-bubble ${isUser ? "user" : "assistant"} fade-in">
-        <div class="flex ${isUser ? "justify-end" : "justify-start"} space-x-3">
+        <div class="flex ${isUser ? "justify-end" : "justify-start"} space-x-3 w-full">
           ${
               !isUser
                   ? `
@@ -186,7 +186,7 @@ export class ChatContainer {
                   : ""
           }
           
-          <div class="max-w-3xl ${isUser ? "order-first" : ""}">
+          <div class="max-w-2xl ${isUser ? "order-first" : ""}">
             <div class="message-content ${
                 isUser ? "bg-primary-600 text-white" : "bg-gray-100 text-gray-900"
             } rounded-2xl px-4 py-3 ${isUser ? "rounded-br-md" : "rounded-bl-md"}">
@@ -202,7 +202,7 @@ export class ChatContainer {
                 <button 
                   class="copy-btn text-xs text-gray-400 hover:text-gray-600 transition-colors"
                   data-content="${escapeHtml(message.content)}"
-                  title="复制消息"
+                  title="Copy message"
                 >
                   <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
@@ -233,13 +233,13 @@ export class ChatContainer {
     }
 
     /**
-     * 格式化消息内容
+     * Format message content
      */
     formatMessageContent(content) {
-        // 转义HTML
+        // Escape HTML
         let formatted = escapeHtml(content);
 
-        // 处理代码块
+        // Handle code blocks
         formatted = formatted.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
             return `<div class="code-block bg-gray-800 text-gray-100 rounded-lg p-4 my-3 overflow-x-auto">
         ${lang ? `<div class="text-xs text-gray-400 mb-2">${lang}</div>` : ""}
@@ -247,19 +247,19 @@ export class ChatContainer {
       </div>`;
         });
 
-        // 处理行内代码
+        // Handle inline code
         formatted = formatted.replace(
             /`([^`]+)`/g,
             '<code class="bg-gray-200 text-gray-800 px-1 py-0.5 rounded text-sm font-mono">$1</code>'
         );
 
-        // 处理粗体
+        // Handle bold text
         formatted = formatted.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
 
-        // 处理斜体
+        // Handle italic text
         formatted = formatted.replace(/\*(.*?)\*/g, "<em>$1</em>");
 
-        // 处理链接
+        // Handle links
         formatted = formatted.replace(
             /\[([^\]]+)\]\(([^)]+)\)/g,
             '<a href="$2" class="text-blue-600 hover:text-blue-800 underline" target="_blank" rel="noopener noreferrer">$1</a>'
@@ -269,14 +269,14 @@ export class ChatContainer {
     }
 
     /**
-     * 渲染输入区域
+     * Render input area
      */
     renderInputArea() {
         const hasFiles = this.state.uploadedFiles.length > 0;
 
         return `
       <div class="space-y-3">
-        <!-- 文件引用 -->
+        <!-- File references -->
         ${
             hasFiles
                 ? `
@@ -284,34 +284,34 @@ export class ChatContainer {
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
             </svg>
-            <span>已上传 ${this.state.uploadedFiles.length} 个文件</span>
+            <span>Uploaded ${this.state.uploadedFiles.length} files</span>
             <button 
               id="toggle-files-btn" 
               class="text-primary-600 hover:text-primary-800 transition-colors"
             >
-              查看文件
+              View files
             </button>
           </div>
         `
                 : ""
         }
         
-        <!-- 输入框 -->
-        <div class="flex items-end space-x-3">
+        <!-- Input box -->
+        <div class="flex items-center space-x-3">
           <div class="flex-1 relative">
             <textarea
               id="message-input"
-              placeholder="${this.state.apiKey ? "输入您的消息..." : "请先在设置中配置 API Key"}"
+              placeholder="${this.state.apiKey ? "Enter your message..." : "Please configure API Key in settings first"}"
               class="input-field resize-none min-h-[44px] max-h-32 pr-12"
               rows="1"
               ${!this.state.apiKey || this.state.loading ? "disabled" : ""}
             ></textarea>
             
-            <!-- 文件上传按钮 -->
+            <!-- File upload button -->
             <button
               id="file-upload-btn"
               class="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 text-gray-400 hover:text-primary-600 transition-colors rounded-lg hover:bg-gray-100 touch-manipulation"
-              title="上传文件"
+              title="Upload file"
               ${!this.state.apiKey || this.state.loading ? "disabled" : ""}
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -319,7 +319,7 @@ export class ChatContainer {
               </svg>
             </button>
             
-            <!-- 隐藏的文件输入 -->
+            <!-- Hidden file input -->
             <input
               type="file"
               id="file-input"
@@ -331,7 +331,7 @@ export class ChatContainer {
           
           <button
             id="send-btn"
-            class="btn-primary px-4 py-2 ${
+            class="btn-primary px-4 py-2 h-11 flex items-center justify-center ${
                 !this.state.apiKey || this.state.loading ? "opacity-50 cursor-not-allowed" : ""
             }"
             ${!this.state.apiKey || this.state.loading ? "disabled" : ""}
@@ -350,11 +350,11 @@ export class ChatContainer {
           </button>
         </div>
         
-        <!-- 文件上传进度 -->
+        <!-- File upload progress -->
         <div id="upload-progress" class="hidden">
           <div class="bg-gray-50 rounded-lg p-3 border border-gray-200">
             <div class="flex items-center justify-between mb-2">
-              <span class="text-sm font-medium text-gray-700">上传文件</span>
+              <span class="text-sm font-medium text-gray-700">Uploading files</span>
               <button id="cancel-upload-btn" class="text-gray-400 hover:text-red-600 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -365,10 +365,10 @@ export class ChatContainer {
           </div>
         </div>
         
-        <!-- 快捷操作 -->
+        <!-- Quick actions -->
         <div class="flex items-center justify-between text-xs text-gray-500">
           <div class="flex items-center space-x-4">
-            <span>按 Enter 发送，Shift + Enter 换行</span>
+            <span>Press Enter to send, Shift + Enter for new line</span>
             ${
                 hasFiles
                     ? `
@@ -376,7 +376,7 @@ export class ChatContainer {
                 id="clear-files-btn" 
                 class="text-red-500 hover:text-red-700 transition-colors"
               >
-                清空文件
+                Clear files
               </button>
             `
                     : ""
@@ -384,7 +384,7 @@ export class ChatContainer {
           </div>
           
           <div class="flex items-center space-x-2">
-            <span>字符数: <span id="char-count">0</span></span>
+            <span>Characters: <span id="char-count">0</span></span>
           </div>
         </div>
       </div>
@@ -392,12 +392,12 @@ export class ChatContainer {
     }
 
     /**
-     * 更新内容
+     * Update content
      */
     updateContent() {
         if (!this.container) return;
 
-        // 更新消息列表
+        // Update message list
         const messagesList = this.container.querySelector("#messages-list");
         if (messagesList) {
             messagesList.innerHTML = this.renderMessages();
@@ -405,19 +405,19 @@ export class ChatContainer {
             this.scrollToBottom();
         }
 
-        // 更新输入区域
-        const inputArea = this.container.querySelector(".border-t.border-gray-200 .space-y-3");
+        // Update input area
+        const inputArea = this.container.querySelector(".border-t.border-gray-200");
         if (inputArea) {
-            inputArea.innerHTML = this.renderInputArea().replace('<div class="space-y-3">', "").replace("</div>", "");
+            inputArea.innerHTML = this.renderInputArea();
             this.attachInputListeners();
         }
 
-        // 更新头部状态
+        // Update header status
         this.updateHeaderStatus();
     }
 
     /**
-     * 更新头部状态
+     * Update header status
      */
     updateHeaderStatus() {
         const statusDot = this.container.querySelector(".w-2.h-2.rounded-full");
@@ -427,40 +427,40 @@ export class ChatContainer {
         if (statusDot && statusText) {
             if (this.state.apiKey) {
                 statusDot.className = "w-2 h-2 rounded-full bg-green-500";
-                statusText.textContent = "已连接";
+                statusText.textContent = "Connected";
             } else {
                 statusDot.className = "w-2 h-2 rounded-full bg-red-500";
-                statusText.textContent = "未连接";
+                statusText.textContent = "Disconnected";
             }
         }
 
         if (modelText) {
-            modelText.textContent = this.state.apiKey ? `模型: ${this.state.currentModel}` : "请先配置 API Key";
+            modelText.textContent = this.state.apiKey ? `Model: ${this.state.currentModel}` : "Please configure API Key first";
         }
     }
 
     /**
-     * 绑定事件监听器
+     * Attach event listeners
      */
     attachEventListeners() {
-        // 清空对话按钮
+        // Clear chat button
         const clearChatBtn = this.container.querySelector("#clear-chat-btn");
         if (clearChatBtn) {
             clearChatBtn.addEventListener("click", () => {
-                if (confirm("确定要清空所有对话记录吗？")) {
+                if (confirm("Are you sure you want to clear all chat records?")) {
                     appStore.clearMessages();
                 }
             });
         }
 
-        // 建议按钮
+        // Suggestion buttons
         const suggestionBtns = this.container.querySelectorAll(".suggestion-btn");
         suggestionBtns.forEach((btn) => {
             btn.addEventListener("click", () => {
                 const suggestion = btn.querySelector("p").textContent;
                 const input = this.container.querySelector("#message-input");
                 if (input) {
-                    input.value = `请帮我${suggestion.toLowerCase()}`;
+                    input.value = `Please help me ${suggestion.toLowerCase()}`;
                     input.focus();
                 }
             });
@@ -471,7 +471,7 @@ export class ChatContainer {
     }
 
     /**
-     * 绑定输入区域事件
+     * Attach input area events
      */
     attachInputListeners() {
         const messageInput = this.container.querySelector("#message-input");
@@ -481,18 +481,18 @@ export class ChatContainer {
         const clearFilesBtn = this.container.querySelector("#clear-files-btn");
 
         if (messageInput) {
-            // 自动调整高度
+            // Auto adjust height
             messageInput.addEventListener("input", () => {
                 messageInput.style.height = "auto";
                 messageInput.style.height = Math.min(messageInput.scrollHeight, 128) + "px";
 
-                // 更新字符计数
+                // Update character count
                 if (charCount) {
                     charCount.textContent = messageInput.value.length;
                 }
             });
 
-            // 键盘事件
+            // Keyboard events
             messageInput.addEventListener("keydown", (e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
@@ -521,7 +521,7 @@ export class ChatContainer {
             });
         }
 
-        // 文件上传按钮
+        // File upload button
         const fileUploadBtn = this.container.querySelector("#file-upload-btn");
         const fileInput = this.container.querySelector("#file-input");
 
@@ -535,7 +535,7 @@ export class ChatContainer {
             });
         }
 
-        // 文件上传进度取消按钮
+        // File upload progress cancel button
         const cancelUploadBtn = this.container.querySelector("#cancel-upload-btn");
         if (cancelUploadBtn) {
             cancelUploadBtn.addEventListener("click", () => {
@@ -543,7 +543,7 @@ export class ChatContainer {
             });
         }
 
-        // 拖拽上传到输入框
+        // Drag and drop upload to input box
         if (messageInput) {
             messageInput.addEventListener("dragover", (e) => {
                 e.preventDefault();
@@ -568,7 +568,7 @@ export class ChatContainer {
     }
 
     /**
-     * 绑定消息列表事件
+     * Attach message list events
      */
     attachMessageListeners() {
         const copyBtns = this.container.querySelectorAll(".copy-btn");
@@ -590,14 +590,14 @@ export class ChatContainer {
             `;
                     }, 2000);
                 } catch (error) {
-                    console.error("复制失败:", error);
+                    console.error("Copy failed:", error);
                 }
             });
         });
     }
 
     /**
-     * 发送消息
+     * Send message
      */
     async sendMessage() {
         const messageInput = this.container.querySelector("#message-input");
@@ -607,24 +607,24 @@ export class ChatContainer {
         if (!content) return;
 
         if (!this.state.apiKey) {
-            appStore.setError("请先配置 API Key");
+            appStore.setError("Please configure API Key first");
             return;
         }
 
-        // 设置API密钥到openaiService
+        // Set API key to openaiService
         openaiService.setApiKey(this.state.apiKey);
 
-        // 清空输入框
+        // Clear input box
         messageInput.value = "";
         messageInput.style.height = "auto";
 
-        // 更新字符计数
+        // Update character count
         const charCount = this.container.querySelector("#char-count");
         if (charCount) {
             charCount.textContent = "0";
         }
 
-        // 添加用户消息
+        // Add user message
         const userMessage = {
             id: Date.now().toString(),
             role: "user",
@@ -633,13 +633,13 @@ export class ChatContainer {
         };
         appStore.addMessage(userMessage);
 
-        // 准备消息历史（包含文件内容）
+        // Prepare message history (including file content)
         const messages = this.prepareMessagesForAPI();
 
         try {
             appStore.setLoading(true);
 
-            // 创建助手消息占位符
+            // Create assistant message placeholder
             const assistantMessage = {
                 id: (Date.now() + 1).toString(),
                 role: "assistant",
@@ -652,15 +652,15 @@ export class ChatContainer {
             this.streamingContent = "";
             this.isStreaming = true;
 
-            // 发送流式请求
+            // Send streaming request
             await openaiService.sendChatMessageStream(messages, (chunk) => {
                 this.handleStreamChunk(chunk);
             });
         } catch (error) {
-            console.error("发送消息失败:", error);
-            appStore.setError(`发送消息失败: ${error.message}`);
+            console.error("Failed to send message:", error);
+            appStore.setError(`Failed to send message: ${error.message}`);
 
-            // 移除失败的助手消息
+            // Remove failed assistant message
             if (this.currentStreamingMessage) {
                 appStore.removeMessage(this.currentStreamingMessage.id);
             }
@@ -669,16 +669,21 @@ export class ChatContainer {
             this.isStreaming = false;
             this.currentStreamingMessage = null;
             this.streamingContent = "";
+            
+            // 自动保存当前对话（如果是在已加载的对话中继续聊天）
+            if (appStore.state.currentConversationId) {
+                appStore.saveCurrentConversation();
+            }
         }
     }
 
     /**
-     * 准备发送给API的消息
+     * Prepare messages for API
      */
     prepareMessagesForAPI() {
         const messages = [...this.state.messages];
 
-        // 如果有上传的文件，在第一条用户消息前添加文件内容
+        // If there are uploaded files, add file content before the first user message
         if (this.state.uploadedFiles.length > 0) {
             const fileContents = this.state.uploadedFiles
                 .map((file) => `文件名: ${file.name}\n内容:\n${file.content}`)
@@ -686,7 +691,7 @@ export class ChatContainer {
 
             const systemMessage = {
                 role: "system",
-                content: `用户上传了以下文件，请在回答时参考这些文件内容：\n\n${fileContents}`,
+                content: `User uploaded the following files, please refer to these file contents when answering:\n\n${fileContents}`,
             };
 
             messages.unshift(systemMessage);
@@ -696,21 +701,21 @@ export class ChatContainer {
     }
 
     /**
-     * 处理流式响应块
+     * Handle streaming response chunks
      */
     handleStreamChunk(chunk) {
         if (!this.currentStreamingMessage) return;
 
         this.streamingContent += chunk;
 
-        // 更新消息内容
+        // Update message content
         appStore.updateMessage(this.currentStreamingMessage.id, {
             content: this.streamingContent,
         });
     }
 
     /**
-     * 滚动到底部
+     * Scroll to bottom
      */
     scrollToBottom() {
         const messagesContainer = this.container?.querySelector("#messages-container");
@@ -722,7 +727,7 @@ export class ChatContainer {
     }
 
     /**
-     * 处理文件上传
+     * Handle file upload
      */
     async handleFileUpload(files) {
         if (!files || files.length === 0) return;
@@ -732,7 +737,7 @@ export class ChatContainer {
 
         if (!uploadProgress || !uploadFileList) return;
 
-        // 显示上传进度区域
+        // Show upload progress area
         uploadProgress.classList.remove("hidden");
         uploadFileList.innerHTML = "";
 
@@ -740,11 +745,11 @@ export class ChatContainer {
         const uploadPromises = [];
 
         for (const file of fileArray) {
-            // 创建文件项UI
+            // Create file item UI
             const fileItem = this.createFileUploadItem(file);
             uploadFileList.appendChild(fileItem);
 
-            // 开始上传处理
+            // Start upload processing
             const uploadPromise = this.processFileUpload(file, fileItem);
             uploadPromises.push(uploadPromise);
         }
@@ -752,31 +757,31 @@ export class ChatContainer {
         try {
             const results = await Promise.allSettled(uploadPromises);
 
-            // 处理上传结果
+            // Handle upload results
             const successfulUploads = results
                 .filter((result) => result.status === "fulfilled" && result.value)
                 .map((result) => result.value);
 
             if (successfulUploads.length > 0) {
-                // 将成功上传的文件添加到store
+                // Add successfully uploaded files to store
                 successfulUploads.forEach((fileData) => {
                     appStore.addFile(fileData);
                 });
 
-                // 在输入框中插入文件引用
+                // Insert file references in input box
                 this.insertFileReferences(successfulUploads);
             }
 
-            // 3秒后隐藏上传进度
+            // Hide upload progress after 3 seconds
             setTimeout(() => {
                 uploadProgress.classList.add("hidden");
             }, 3000);
         } catch (error) {
-            console.error("文件上传失败:", error);
-            appStore.setError("文件上传失败: " + error.message);
+            console.error("File upload failed:", error);
+            appStore.setError("File upload failed: " + error.message);
         }
 
-        // 清空文件输入
+        // Clear file input
         const fileInput = this.container.querySelector("#file-input");
         if (fileInput) {
             fileInput.value = "";
@@ -784,7 +789,7 @@ export class ChatContainer {
     }
 
     /**
-     * 创建文件上传项UI
+     * Create file upload item UI
      */
     createFileUploadItem(file) {
         const fileItem = document.createElement("div");
@@ -811,22 +816,22 @@ export class ChatContainer {
     }
 
     /**
-     * 处理单个文件上传
+     * Handle single file upload
      */
     async processFileUpload(file, fileItem) {
         const statusElement = fileItem.querySelector(".upload-status");
 
         try {
-            // 验证文件
+            // Validate file
             const validation = fileService.validateFile(file);
             if (!validation.valid) {
                 throw new Error(validation.error);
             }
 
-            // 处理文件
+            // Process file
             const fileData = await fileService.processFile(file);
 
-            // 更新状态为成功
+            // Update status to success
             statusElement.innerHTML = `
                 <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
@@ -835,44 +840,44 @@ export class ChatContainer {
 
             return fileData;
         } catch (error) {
-            // 更新状态为失败
+            // Update status to failure
             statusElement.innerHTML = `
                 <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             `;
 
-            // 显示错误信息
+            // Show error message
             const errorElement = document.createElement("p");
             errorElement.className = "text-xs text-red-600 mt-1";
             errorElement.textContent = error.message;
             fileItem.appendChild(errorElement);
 
-            console.error(`文件 ${file.name} 上传失败:`, error);
+            console.error(`File ${file.name} upload failed:`, error);
             return null;
         }
     }
 
     /**
-     * 在输入框中插入文件引用
+     * Insert file references in input box
      */
     insertFileReferences(files) {
         const messageInput = this.container.querySelector("#message-input");
         if (!messageInput) return;
 
         const currentValue = messageInput.value;
-        const fileReferences = files.map((file) => `[文件: ${file.name}]`).join(" ");
+        const fileReferences = files.map((file) => `[File: ${file.name}]`).join(" ");
 
         const newValue = currentValue ? `${currentValue}\n${fileReferences}` : fileReferences;
         messageInput.value = newValue;
 
-        // 触发input事件以更新字符计数和高度
+        // Trigger input event to update character count and height
         messageInput.dispatchEvent(new Event("input"));
         messageInput.focus();
     }
 
     /**
-     * 取消文件上传
+     * Cancel file upload
      */
     cancelFileUpload() {
         const uploadProgress = this.container.querySelector("#upload-progress");
@@ -880,7 +885,7 @@ export class ChatContainer {
             uploadProgress.classList.add("hidden");
         }
 
-        // 清空文件输入
+        // Clear file input
         const fileInput = this.container.querySelector("#file-input");
         if (fileInput) {
             fileInput.value = "";
@@ -888,7 +893,7 @@ export class ChatContainer {
     }
 
     /**
-     * 销毁组件
+     * Destroy component
      */
     destroy() {
         if (this.unsubscribe) {
