@@ -301,7 +301,9 @@ export class ChatContainer {
           <div class="flex-1 relative">
             <textarea
               id="message-input"
-              placeholder="${this.state.apiKey ? "Enter your message..." : "Please configure API Key in settings first"}"
+              placeholder="${
+                  this.state.apiKey ? "Enter your message..." : "Please configure API Key in settings first"
+              }"
               class="input-field resize-none min-h-[44px] max-h-32 pr-12"
               rows="1"
               ${!this.state.apiKey || this.state.loading ? "disabled" : ""}
@@ -435,7 +437,9 @@ export class ChatContainer {
         }
 
         if (modelText) {
-            modelText.textContent = this.state.apiKey ? `Model: ${this.state.currentModel}` : "Please configure API Key first";
+            modelText.textContent = this.state.apiKey
+                ? `Model: ${this.state.currentModel}`
+                : "Please configure API Key first";
         }
     }
 
@@ -669,7 +673,7 @@ export class ChatContainer {
             this.isStreaming = false;
             this.currentStreamingMessage = null;
             this.streamingContent = "";
-            
+
             // 自动保存当前对话（如果是在已加载的对话中继续聊天）
             if (appStore.state.currentConversationId) {
                 appStore.saveCurrentConversation();
