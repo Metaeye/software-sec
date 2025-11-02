@@ -249,3 +249,237 @@ export function isEmpty(obj) {
     if (Array.isArray(obj) || typeof obj === "string") return obj.length === 0;
     return Object.keys(obj).length === 0;
 }
+
+/**
+ * 过滤Message对象content字段中的系统指令
+ * 专门用于识别并移除符合 {"role":"system","content":"..."} 格式的JSON系统指令
+ * 
+ * @param {string} text - 输入的文本内容，可能包含系统指令和用户内容的混合字符串
+ * @returns {object} 返回包含过滤结果的对象
+ */
+export function filterSystemPrompts(text) {
+    // 输入验证
+    if (typeof text !== 'string') {
+        return {
+            success: false,
+            cleanedContent: '',
+            originalContent: text,
+            filteredCount: 0,
+            errors: ['输入必须是字符串类型']
+        };
+    }
+
+    // 处理空输入
+    if (!text.trim()) {
+        return {
+            success: true,
+            cleanedContent: text,
+            originalContent: text,
+            filteredCount: 0,
+            errors: []
+        };
+    }
+
+    try {
+        // 使用更强大的方法来检测系统指令JSON
+        // 首先用宽松的正则表达式找到可能的JSON对象，然后尝试解析
+        const possibleJsonRegex = /\{[^{}]*"role"[^{}]*"system"[^{}]*\}/g;
+        
+        let filteredCount = 0;
+        let cleanedContent = text;
+        const matches = [];
+
+        // 查找所有可能的JSON对象
+        let match;
+        while ((match = possibleJsonRegex.exec(text)) !== null) {
+            const jsonStr = match[0];
+            
+            // 尝试解析JSON并检查是否为系统指令
+            try {
+                // 先尝试直接解析
+                let parsed;
+                try {
+                    parsed = JSON.parse(jsonStr);
+                } catch (e) {
+                    // 如果解析失败，尝试修复常见的JSON格式问题
+                    const fixedJson = jsonStr
+                        .replace(/([{,]\s*)([a-zA-Z_][a-zA-Z0-9_]*)\s*:/g, '$1"$2":') // 添加缺失的引号
+                        .replace(/:\s*([^",\{\}\[\]]+)(?=\s*[,\}])/g, ':"$1"'); // 为值添加引号
+                    parsed = JSON.parse(fixedJson);
+                }
+                
+                // 检查是否为系统指令
+                if (parsed && typeof parsed === 'object' && parsed.role === 'system') {
+                    matches.push({
+                        content: jsonStr,
+                        start: match.index,
+                        end: match.index + jsonStr.length
+                    });
+                    filteredCount++;
+                }
+            } catch (parseError) {
+                // 如果JSON解析失败，使用更宽松的字符串匹配
+                if (jsonStr.includes('"role"') && jsonStr.includes('"system"') && jsonStr.includes('"content"')) {
+                    matches.push({
+                        content: jsonStr,
+                        start: match.index,
+                        end: match.index + jsonStr.length
+                    });
+                    filteredCount++;
+                }
+            }
+        }
+
+        // 从后往前移除匹配项，避免索引偏移问题
+        matches.reverse().forEach(matchInfo => {
+            cleanedContent = cleanedContent.slice(0, matchInfo.start) + 
+                           cleanedContent.slice(matchInfo.end);
+        });
+
+        // 清理多余的空白字符和换行符
+        cleanedContent = cleanedContent
+            .replace(/\n\s*\n/g, '\n') // 移除多余的空行
+            .replace(/^\s+|\s+$/g, '') // 移除首尾空白
+            .replace(/\n\s*$/g, ''); // 移除末尾的换行和空白
+
+        return {
+            success: true,
+            cleanedContent,
+            originalContent: text,
+            filteredCount,
+            errors: []
+        };
+
+    } catch (error) {
+        return {
+            success: false,
+            cleanedContent: text,
+            originalContent: text,
+            filteredCount: 0,
+            errors: [`处理过程中发生错误: ${error.message}`]
+        };
+    }
+}
+
+/**
+ * 高级系统指令过滤器
+ * 支持更复杂的场景，包括嵌套JSON、多种格式变体等
+ * 
+ * @param {string} text - 输入文本
+ * @param {object} options - 配置选项
+ * @returns {object} 过滤结果
+ */
+export function advancedFilterSystemPrompts(text, options = {}) {
+    const {
+        preserveWhitespace = false, // 是否保留原始空白字符
+        strictMode = false, // 严格模式，只匹配标准JSON格式
+        logMatches = false // 是否记录匹配的内容
+    } = options;
+
+    if (typeof text !== 'string') {
+        return {
+            success: false,
+            cleanedContent: '',
+            originalContent: text,
+            filteredCount: 0,
+            matches: [],
+            errors: ['输入必须是字符串类型']
+        };
+    }
+
+    if (!text.trim()) {
+        return {
+            success: true,
+            cleanedContent: text,
+            originalContent: text,
+            filteredCount: 0,
+            matches: [],
+            errors: []
+        };
+    }
+
+    try {
+        let cleanedContent = text;
+        let filteredCount = 0;
+        const matches = [];
+        const errors = [];
+
+        // 基础正则表达式
+        let systemPromptRegex;
+        
+        if (strictMode) {
+            // 严格模式：精确匹配标准JSON格式
+            systemPromptRegex = /\{"role":"system","content":"[^"]*(?:\\.[^"]*)*"\}/g;
+        } else {
+            // 宽松模式：支持各种空白字符和引号变体
+            systemPromptRegex = /\{\s*["']?role["']?\s*:\s*["']system["']\s*,\s*["']?content["']?\s*:\s*["'][^"']*(?:\\.[^"']*)*["']\s*\}/g;
+        }
+
+        // 查找并处理匹配项
+        let match;
+        const matchInfos = [];
+        
+        while ((match = systemPromptRegex.exec(text)) !== null) {
+            const matchInfo = {
+                content: match[0],
+                start: match.index,
+                end: match.index + match[0].length,
+                line: text.substring(0, match.index).split('\n').length
+            };
+            
+            matchInfos.push(matchInfo);
+            
+            if (logMatches) {
+                matches.push({
+                    content: matchInfo.content,
+                    position: matchInfo.start,
+                    line: matchInfo.line
+                });
+            }
+            
+            filteredCount++;
+        }
+
+        // 验证匹配的JSON格式
+        matchInfos.forEach(matchInfo => {
+            try {
+                JSON.parse(matchInfo.content);
+            } catch (e) {
+                errors.push(`第${matchInfo.line}行发现格式错误的JSON: ${e.message}`);
+            }
+        });
+
+        // 从后往前移除匹配项
+        matchInfos.reverse().forEach(matchInfo => {
+            cleanedContent = cleanedContent.slice(0, matchInfo.start) + 
+                           cleanedContent.slice(matchInfo.end);
+        });
+
+        // 根据选项处理空白字符
+        if (!preserveWhitespace && cleanedContent.trim()) {
+            cleanedContent = cleanedContent
+                .replace(/\n\s*\n/g, '\n')
+                .replace(/^\s+|\s+$/g, '')
+                .replace(/\n\s*$/g, '');
+        }
+
+        return {
+            success: true,
+            cleanedContent,
+            originalContent: text,
+            filteredCount,
+            matches,
+            errors
+        };
+
+    } catch (error) {
+        return {
+            success: false,
+            cleanedContent: text,
+            originalContent: text,
+            filteredCount: 0,
+            matches: [],
+            errors: [`处理过程中发生错误: ${error.message}`]
+        };
+    }
+}

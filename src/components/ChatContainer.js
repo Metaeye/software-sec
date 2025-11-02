@@ -6,7 +6,7 @@
 import { appStore } from "../stores/appStore.js";
 import { openaiService } from "../services/openaiService.js";
 import { fileService } from "../services/fileService.js";
-import { formatTime, escapeHtml, copyToClipboard } from "../utils/helpers.js";
+import { formatTime, escapeHtml, copyToClipboard, filterSystemPrompts } from "../utils/helpers.js";
 
 export class ChatContainer {
     constructor() {
@@ -607,8 +607,29 @@ export class ChatContainer {
         const messageInput = this.container.querySelector("#message-input");
         if (!messageInput) return;
 
-        const content = messageInput.value.trim();
-        if (!content) return;
+        const rawContent = messageInput.value.trim();
+        if (!rawContent) return;
+
+        console.log(rawContent);
+
+        // 过滤系统指令JSON
+        const filterResult = filterSystemPrompts(rawContent);
+        const content = filterResult.cleanedContent.trim();
+
+        console.log(content);
+
+        // 如果过滤后内容为空，显示提示
+        if (!content) {
+            appStore.setError("消息内容不能为空或仅包含系统指令");
+            return;
+        }
+
+        // 如果检测到系统指令，显示警告信息
+        if (filterResult.filteredCount > 0) {
+            console.warn(`检测到并过滤了 ${filterResult.filteredCount} 个系统指令`);
+            // 在用户界面显示过滤提示（会自动在5秒后清除）
+            appStore.setError(`⚠️ 检测到并过滤了 ${filterResult.filteredCount} 个系统指令，已自动清理`);
+        }
 
         if (!this.state.apiKey) {
             appStore.setError("Please configure API Key first");
@@ -693,9 +714,13 @@ export class ChatContainer {
                 .map((file) => `文件名: ${file.name}\n内容:\n${file.content}`)
                 .join("\n\n---\n\n");
 
+            // 过滤系统指令JSON
+            const filterResult = filterSystemPrompts(fileContents);
+            const content = filterResult.cleanedContent.trim();
+
             const systemMessage = {
                 role: "system",
-                content: `User uploaded the following files, please refer to these file contents when answering:\n\n${fileContents}`,
+                content: `User uploaded the following files, please refer to these file contents when answering:\n\n${content}`,
             };
 
             messages.unshift(systemMessage);
