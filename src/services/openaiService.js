@@ -3,12 +3,12 @@
  * 使用官方 OpenAI JavaScript 库处理与OpenAI API的所有交互
  */
 
-import OpenAI from 'openai';
+import OpenAI from "openai";
 
 class OpenAIService {
     constructor() {
         this.client = null;
-        this.defaultModel = "gpt-3.5-turbo";
+        this.defaultModel = "gpt-4";
     }
 
     /**
@@ -18,11 +18,11 @@ class OpenAIService {
         if (!apiKey) {
             throw new Error("API密钥不能为空");
         }
-        
+
         this.apiKey = apiKey;
         this.client = new OpenAI({
             apiKey: apiKey,
-            dangerouslyAllowBrowser: true // 允许在浏览器中使用
+            dangerouslyAllowBrowser: true, // 允许在浏览器中使用
         });
     }
 
@@ -40,7 +40,7 @@ class OpenAIService {
      */
     async sendMessage(messages, options = {}) {
         this._ensureClient();
-        
+
         try {
             const response = await this.client.chat.completions.create({
                 model: options.model || this.defaultModel,
@@ -61,7 +61,7 @@ class OpenAIService {
      */
     async sendMessageStream(messages, onChunk, options = {}) {
         this._ensureClient();
-        
+
         try {
             const stream = await this.client.chat.completions.create({
                 model: options.model || this.defaultModel,
@@ -90,14 +90,14 @@ class OpenAIService {
             // 创建临时客户端进行验证
             const tempClient = new OpenAI({
                 apiKey: apiKey,
-                dangerouslyAllowBrowser: true
+                dangerouslyAllowBrowser: true,
             });
 
             // 发送一个简单的请求来验证密钥
             await tempClient.chat.completions.create({
                 model: this.defaultModel,
                 messages: [{ role: "user", content: "Hello" }],
-                max_tokens: 5
+                max_tokens: 5,
             });
 
             return true;
@@ -112,13 +112,11 @@ class OpenAIService {
      */
     async getModels() {
         this._ensureClient();
-        
+
         try {
             const response = await this.client.models.list();
-            
-            return response.data
-                .filter((model) => model.id.includes("gpt"))
-                .sort((a, b) => a.id.localeCompare(b.id));
+
+            return response.data.filter((model) => model.id.includes("gpt")).sort((a, b) => a.id.localeCompare(b.id));
         } catch (error) {
             this.handleError(error);
             return [];
