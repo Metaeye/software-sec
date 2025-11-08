@@ -251,8 +251,162 @@ export function isEmpty(obj) {
 }
 
 /**
+ * 检测并解码base64字符串
+ * @param {string} base64Str - base64编码的字符串
+ * @returns {string|null} 解码后的字符串，如果解码失败返回null
+ */
+function decodeBase64(base64Str) {
+    try {
+        const cleaned = base64Str.trim();
+        const decoded = atob(cleaned);
+        // 检查解码后的内容是否为可打印字符
+        if (/^[\x20-\x7E\s]*$/.test(decoded)) {
+            return decoded;
+        }
+        return null;
+    } catch (e) {
+        return null;
+    }
+}
+
+/**
+ * 检测是否为钓鱼指令
+ * @param {string} text - 待检测的文本
+ * @returns {boolean} 是否为钓鱼指令
+ */
+function isPhishingInstruction(text) {
+    if (!text || typeof text !== 'string') return false;
+    
+    const lowerText = text.toLowerCase();
+    
+    // 常见的钓鱼指令关键词
+    const phishingPatterns = [
+        /login\s+session\s+has\s+timed\s+out/i,
+        /click\s+here\s+to\s+log\s+in/i,
+        /please\s+log\s+in\s+again/i,
+        /your\s+session\s+has\s+expired/i,
+        /re-authenticate/i,
+        /verify\s+your\s+account/i,
+        /update\s+your\s+credentials/i,
+        /security\s+alert/i,
+        /suspicious\s+activity/i,
+        /confirm\s+your\s+identity/i,
+    ];
+    
+    return phishingPatterns.some(pattern => pattern.test(lowerText));
+}
+
+/**
+ * 检测并过滤base64编码的钓鱼指令
+ * @param {string} text - 输入文本
+ * @returns {Array} 匹配到的钓鱼指令位置信息数组
+ */
+function detectBase64PhishingInstructions(text) {
+    const matches = [];
+    
+    // 匹配连续的base64字符（至少20个）
+    const simplePattern = /[A-Za-z0-9+\/]{20,}={0,2}/g;
+    
+    let match;
+    while ((match = simplePattern.exec(text)) !== null) {
+        const base64Str = match[0];
+        
+        // 验证base64字符串格式
+        if (base64Str.length < 16) continue;
+        if (!/^[A-Za-z0-9+\/]+={0,2}$/.test(base64Str)) continue;
+        
+        // 检查匹配的base64字符串是否被非base64字符或文本边界包围
+        const beforeChar = match.index > 0 ? text[match.index - 1] : '';
+        const afterChar = match.index + base64Str.length < text.length ? text[match.index + base64Str.length] : '';
+        
+        // 如果前后都是base64字符（不是空白或边界），可能是文本的一部分，跳过
+        if (beforeChar && /[A-Za-z0-9+\/]/.test(beforeChar) && !/\s/.test(beforeChar)) continue;
+        if (afterChar && /[A-Za-z0-9+\/]/.test(afterChar) && !/\s/.test(afterChar)) continue;
+        
+        // 尝试解码
+        const decoded = decodeBase64(base64Str);
+        
+        if (decoded && isPhishingInstruction(decoded)) {
+            // 扩展匹配范围，包括前后可能的空白字符
+            let start = match.index;
+            let end = match.index + base64Str.length;
+            
+            // 向前查找空白字符
+            while (start > 0 && /\s/.test(text[start - 1])) {
+                start--;
+            }
+            
+            // 向后查找空白字符
+            while (end < text.length && /\s/.test(text[end])) {
+                end++;
+            }
+            
+            matches.push({
+                content: text.substring(start, end),
+                decoded: decoded,
+                start: start,
+                end: end
+            });
+        }
+    }
+    
+    // 处理可能被空格分隔的base64字符串
+    const spacedPattern = /(?:^|\s)((?:[A-Za-z0-9+\/]\s*){20,})(?:\s|$)/g;
+    let spacedMatch;
+    const processedRanges = new Set();
+    
+    while ((spacedMatch = spacedPattern.exec(text)) !== null) {
+        const rangeKey = `${spacedMatch.index}-${spacedMatch.index + spacedMatch[0].length}`;
+        if (processedRanges.has(rangeKey)) continue;
+        
+        const base64Sequence = spacedMatch[1];
+        const base64Str = base64Sequence.replace(/\s+/g, '');
+        
+        if (base64Str.length < 16) continue;
+        if (!/^[A-Za-z0-9+\/]+={0,2}$/.test(base64Str)) continue;
+        
+        // 检查是否与已处理的匹配重叠
+        let overlaps = false;
+        for (const existingMatch of matches) {
+            if (spacedMatch.index < existingMatch.end && spacedMatch.index + spacedMatch[0].length > existingMatch.start) {
+                overlaps = true;
+                break;
+            }
+        }
+        if (overlaps) continue;
+        
+        const decoded = decodeBase64(base64Str);
+        
+        if (decoded && isPhishingInstruction(decoded)) {
+            let start = spacedMatch.index;
+            let end = spacedMatch.index + spacedMatch[0].length;
+            
+            while (start > 0 && /\s/.test(text[start - 1])) {
+                start--;
+            }
+            
+            while (end < text.length && /\s/.test(text[end])) {
+                end++;
+            }
+            
+            matches.push({
+                content: text.substring(start, end),
+                decoded: decoded,
+                start: start,
+                end: end
+            });
+            
+            processedRanges.add(rangeKey);
+        }
+    }
+    
+    return matches;
+}
+
+/**
  * 过滤Message对象content字段中的系统指令
  * 专门用于识别并移除符合 {"role":"system","content":"..."} 格式的JSON系统指令
+ * 同时也会检测并移除base64编码的钓鱼指令
  * 
  * @param {string} text - 输入的文本内容，可能包含系统指令和用户内容的混合字符串
  * @returns {object} 返回包含过滤结果的对象
@@ -282,17 +436,35 @@ export function filterSystemPrompts(text) {
 
     try {
         // 使用更强大的方法来检测系统指令JSON
-        // 首先用宽松的正则表达式找到可能的JSON对象，然后尝试解析
-        const possibleJsonRegex = /\{[^{}]*"role"[^{}]*"system"[^{}]*\}/g;
+        // 支持多行JSON（包含换行和缩进）
+        // 首先查找包含 "role" 和 "system" 的JSON对象
+        const jsonStartPattern = /\{[^{}]*"role"\s*:\s*"system"/gs;
         
         let filteredCount = 0;
         let cleanedContent = text;
         const matches = [];
 
-        // 查找所有可能的JSON对象
+        // 查找所有可能的JSON对象开始位置
         let match;
-        while ((match = possibleJsonRegex.exec(text)) !== null) {
-            const jsonStr = match[0];
+        while ((match = jsonStartPattern.exec(text)) !== null) {
+            // 从匹配位置开始，找到完整的JSON对象（通过匹配大括号）
+            const startIndex = match.index;
+            let braceCount = 0;
+            let jsonEnd = startIndex;
+            let jsonStr = '';
+            
+            for (let i = startIndex; i < text.length; i++) {
+                if (text[i] === '{') braceCount++;
+                if (text[i] === '}') braceCount--;
+                if (braceCount === 0) {
+                    jsonEnd = i + 1;
+                    jsonStr = text.substring(startIndex, jsonEnd);
+                    break;
+                }
+            }
+            
+            // 如果没找到匹配的结束大括号，跳过
+            if (!jsonStr) continue;
             
             // 尝试解析JSON并检查是否为系统指令
             try {
@@ -305,15 +477,19 @@ export function filterSystemPrompts(text) {
                     const fixedJson = jsonStr
                         .replace(/([{,]\s*)([a-zA-Z_][a-zA-Z0-9_]*)\s*:/g, '$1"$2":') // 添加缺失的引号
                         .replace(/:\s*([^",\{\}\[\]]+)(?=\s*[,\}])/g, ':"$1"'); // 为值添加引号
-                    parsed = JSON.parse(fixedJson);
+                    try {
+                        parsed = JSON.parse(fixedJson);
+                    } catch (e2) {
+                        parsed = null;
+                    }
                 }
                 
                 // 检查是否为系统指令
                 if (parsed && typeof parsed === 'object' && parsed.role === 'system') {
                     matches.push({
                         content: jsonStr,
-                        start: match.index,
-                        end: match.index + jsonStr.length
+                        start: startIndex,
+                        end: jsonEnd
                     });
                     filteredCount++;
                 }
@@ -322,8 +498,8 @@ export function filterSystemPrompts(text) {
                 if (jsonStr.includes('"role"') && jsonStr.includes('"system"') && jsonStr.includes('"content"')) {
                     matches.push({
                         content: jsonStr,
-                        start: match.index,
-                        end: match.index + jsonStr.length
+                        start: startIndex,
+                        end: jsonEnd
                     });
                     filteredCount++;
                 }
@@ -334,6 +510,16 @@ export function filterSystemPrompts(text) {
         matches.reverse().forEach(matchInfo => {
             cleanedContent = cleanedContent.slice(0, matchInfo.start) + 
                            cleanedContent.slice(matchInfo.end);
+        });
+
+        // 检测base64编码的钓鱼指令
+        const phishingMatches = detectBase64PhishingInstructions(cleanedContent);
+        
+        // 从后往前移除base64钓鱼指令
+        phishingMatches.reverse().forEach(matchInfo => {
+            cleanedContent = cleanedContent.slice(0, matchInfo.start) + 
+                           cleanedContent.slice(matchInfo.end);
+            filteredCount++;
         });
 
         // 清理多余的空白字符和换行符

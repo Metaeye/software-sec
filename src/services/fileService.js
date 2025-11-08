@@ -121,9 +121,44 @@ class FileService {
     async readDocxContent(file) {
         try {
             const arrayBuffer = await file.arrayBuffer();
+            
+            // 使用 extractRawText 提取纯文本
+            // 注意：mammoth.extractRawText 会提取文档中所有可见的段落文本
+            // 但可能会包含嵌入对象（如图片）的base64编码内容
             const result = await mammoth.extractRawText({ arrayBuffer });
-            return result.value;
+            
+            let extractedText = result.value;
+            
+            // 过滤掉可能是嵌入对象的base64编码内容
+            // 这些通常是超长的base64字符串（>100字符），可能是图片、音频等嵌入对象
+            // 但保留较短的base64字符串，因为它们可能是文档中的实际内容
+            extractedText = extractedText.replace(/[A-Za-z0-9+\/]{100,}={0,2}/g, (match) => {
+                // 检查是否是有效的base64编码
+                try {
+                    const decoded = atob(match);
+                    // 如果解码后包含大量不可打印字符，很可能是二进制数据（嵌入对象）
+                    const nonPrintableCount = decoded.split('').filter(c => c.charCodeAt(0) < 32 && c !== '\n' && c !== '\r' && c !== '\t').length;
+                    const printableRatio = (decoded.length - nonPrintableCount) / decoded.length;
+                    // 如果可打印字符比例低于80%，很可能是二进制数据，应该过滤掉
+                    if (printableRatio < 0.8) {
+                        console.log('[DOCX提取] 过滤掉疑似嵌入对象的base64内容，长度:', match.length);
+                        return ''; // 移除
+                    }
+                } catch (e) {
+                    // 无法解码，不是有效的base64，保留原文本
+                }
+                return match; // 保留
+            });
+            
+            // 清理提取的文本：移除多余的空白行和特殊字符
+            let cleanedText = extractedText
+                .replace(/\r\n/g, '\n')  // 统一换行符
+                .replace(/\n{3,}/g, '\n\n')  // 将多个连续换行符压缩为两个
+                .trim();
+            
+            return cleanedText;
         } catch (error) {
+            console.error('[DOCX提取] 错误:', error);
             throw new Error(`无法解析 DOCX 文件: ${error.message}`);
         }
     }

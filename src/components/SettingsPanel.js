@@ -174,6 +174,70 @@ export class SettingsPanel {
             </div>
           </div>
 
+          <!-- Security settings -->
+          <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-6">
+            <div class="flex items-center space-x-3 mb-4">
+              <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+                <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-gray-900">Security Settings</h3>
+                <p class="text-sm text-gray-600">Configure content filtering and security</p>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <div class="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200">
+                <div class="flex-1">
+                  <label for="enable-filter" class="block text-sm font-medium text-gray-900 mb-1">
+                    Enable Content Filter
+                  </label>
+                  <p class="text-xs text-gray-600">
+                    When enabled, malicious system instructions and phishing attempts in uploaded files will be automatically filtered. 
+                    When disabled, all content is sent to AI (useful for testing attack scenarios).
+                  </p>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    id="enable-filter"
+                    class="sr-only peer"
+                    ${this.state.enableContentFilter ? "checked" : ""}
+                  />
+                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
+                </label>
+              </div>
+              
+              ${!this.state.enableContentFilter ? `
+                <div class="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <div class="flex items-start space-x-2">
+                    <svg class="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                    <div class="text-sm text-yellow-800">
+                      <p class="font-medium mb-1">Content Filter Disabled</p>
+                      <p>Malicious instructions in uploaded files will NOT be filtered. AI may be deceived by system instructions or phishing attempts. Use this mode only for testing attack scenarios.</p>
+                    </div>
+                  </div>
+                </div>
+              ` : `
+                <div class="p-3 bg-green-50 border border-green-200 rounded-lg">
+                  <div class="flex items-start space-x-2">
+                    <svg class="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                    </svg>
+                    <div class="text-sm text-green-800">
+                      <p class="font-medium mb-1">Content Filter Enabled</p>
+                      <p>System instructions and phishing attempts in uploaded files will be automatically filtered. AI will only see legitimate document content.</p>
+                    </div>
+                  </div>
+                </div>
+              `}
+            </div>
+          </div>
+
           <!-- Data management -->
           <div class="bg-gray-50 border border-gray-200 rounded-lg p-6">
             <div class="flex items-center space-x-3 mb-4">
@@ -234,6 +298,52 @@ export class SettingsPanel {
         const modelSelect = this.container.querySelector("#model-select");
         if (modelSelect) {
             modelSelect.value = this.state.currentModel;
+        }
+
+        // Update content filter toggle
+        const enableFilter = this.container.querySelector("#enable-filter");
+        if (enableFilter && enableFilter.checked !== this.state.enableContentFilter) {
+            enableFilter.checked = this.state.enableContentFilter;
+        }
+
+        // Update status message (find the security settings section and update it)
+        // Look for the status message div that comes after the toggle switch
+        const enableFilterContainer = this.container.querySelector('#enable-filter')?.closest('.flex.items-center.justify-between');
+        if (enableFilterContainer) {
+            // Find the next sibling that contains the status message
+            let statusDiv = enableFilterContainer.nextElementSibling;
+            while (statusDiv && !statusDiv.classList.contains('p-3')) {
+                statusDiv = statusDiv.nextElementSibling;
+            }
+            if (statusDiv) {
+                if (!this.state.enableContentFilter) {
+                    statusDiv.className = 'p-3 bg-yellow-50 border border-yellow-200 rounded-lg';
+                    statusDiv.innerHTML = `
+                      <div class="flex items-start space-x-2">
+                        <svg class="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                        <div class="text-sm text-yellow-800">
+                          <p class="font-medium mb-1">Content Filter Disabled</p>
+                          <p>Malicious instructions in uploaded files will NOT be filtered. AI may be deceived by system instructions or phishing attempts. Use this mode only for testing attack scenarios.</p>
+                        </div>
+                      </div>
+                    `;
+                } else {
+                    statusDiv.className = 'p-3 bg-green-50 border border-green-200 rounded-lg';
+                    statusDiv.innerHTML = `
+                      <div class="flex items-start space-x-2">
+                        <svg class="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                        <div class="text-sm text-green-800">
+                          <p class="font-medium mb-1">Content Filter Enabled</p>
+                          <p>System instructions and phishing attempts in uploaded files will be automatically filtered. AI will only see legitimate document content.</p>
+                        </div>
+                      </div>
+                    `;
+                }
+            }
         }
     }
 
@@ -305,6 +415,14 @@ export class SettingsPanel {
                 if (confirm("Are you sure you want to clear all uploaded files? This action cannot be undone.")) {
                     appStore.setState({ uploadedFiles: [] });
                 }
+            });
+        }
+
+        // Content filter toggle
+        const enableFilter = this.container.querySelector("#enable-filter");
+        if (enableFilter) {
+            enableFilter.addEventListener("change", (e) => {
+                appStore.setEnableContentFilter(e.target.checked);
             });
         }
     }

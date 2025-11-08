@@ -23,6 +23,9 @@ class AppStore {
             sidebarOpen: true,
             currentView: "chat", // 'chat', 'settings', 'files'
 
+            // 安全设置
+            enableContentFilter: localStorage.getItem("enable_content_filter") !== "false", // 默认启用过滤
+
             // 错误处理
             error: null,
         };
@@ -218,6 +221,12 @@ class AppStore {
 
     setCurrentView(view) {
         this.setState({ currentView: view });
+    }
+
+    // 内容过滤设置
+    setEnableContentFilter(enabled) {
+        localStorage.setItem("enable_content_filter", enabled.toString());
+        this.setState({ enableContentFilter: enabled });
     }
 }
 
