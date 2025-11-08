@@ -365,8 +365,10 @@ export class SettingsPanel {
 
             const response = await openaiService.sendMessage([{ role: "user", content: "Hello" }], { maxTokens: 5 });
 
-            if (response) {
+            if (response && response.choices && response.choices.length > 0) {
                 this.showSuccessMessage("API connection test successful!");
+            } else {
+                throw new Error("Invalid response format");
             }
         } catch (error) {
             appStore.setError(`API connection test failed: ${error.message}`);
