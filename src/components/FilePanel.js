@@ -76,11 +76,11 @@ export class FilePanel {
                   type="file" 
                   id="file-input" 
                   multiple 
-                  accept=".txt,.md,.json,.csv,.html,.css,.js,.jsx,.ts,.tsx,.py,.java,.cpp,.c,.h,.xml,.yml,.yaml"
+                  accept=".txt,.md,.json,.csv,.html,.css,.js,.jsx,.ts,.tsx,.py,.java,.cpp,.c,.h,.xml,.yml,.yaml,.docx"
                   class="hidden"
                 />
                 <p class="text-xs text-gray-500 mt-3">
-                  Supports: TXT, MD, JSON, CSV, HTML, CSS, JS, TS, PY and other text files (max 10MB)
+                  Supports: TXT, MD, JSON, CSV, HTML, CSS, JS, TS, PY, DOCX and other text files (max 10MB)
                 </p>
               `
               }

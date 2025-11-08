@@ -3,6 +3,8 @@
  * 处理文件上传、解析和预览功能
  */
 
+import mammoth from "mammoth";
+
 class FileService {
     constructor() {
         this.supportedTypes = [
@@ -14,6 +16,7 @@ class FileService {
             "text/css",
             "text/javascript",
             "application/javascript",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .docx
         ];
 
         this.maxFileSize = 10 * 1024 * 1024; // 10MB
@@ -45,7 +48,7 @@ class FileService {
         const isSupported = this.supportedTypes.includes(file.type) || this.isTextFile(file.name);
         if (!isSupported) {
             const extension = file.name.substring(file.name.lastIndexOf('.'));
-            errors.push(`不支持的文件类型 "${extension || file.type}"。支持的格式：文本文件、代码文件、JSON、CSV、HTML等`);
+            errors.push(`不支持的文件类型 "${extension || file.type}"。支持的格式：文本文件、代码文件、JSON、CSV、HTML、DOCX等`);
         }
 
         // 检查文件名
@@ -97,6 +100,7 @@ class FileService {
             ".xml",
             ".yml",
             ".yaml",
+            ".docx",
         ];
 
         const extension = fileName.toLowerCase().substring(fileName.lastIndexOf("."));
@@ -104,9 +108,36 @@ class FileService {
     }
 
     /**
+     * 检查是否为 docx 文件
+     */
+    isDocxFile(fileName) {
+        const extension = fileName.toLowerCase().substring(fileName.lastIndexOf("."));
+        return extension === ".docx";
+    }
+
+    /**
+     * 读取 docx 文件内容
+     */
+    async readDocxContent(file) {
+        try {
+            const arrayBuffer = await file.arrayBuffer();
+            const result = await mammoth.extractRawText({ arrayBuffer });
+            return result.value;
+        } catch (error) {
+            throw new Error(`无法解析 DOCX 文件: ${error.message}`);
+        }
+    }
+
+    /**
      * 读取文件内容
      */
     async readFileContent(file) {
+        // 如果是 docx 文件，使用特殊处理
+        if (this.isDocxFile(file.name)) {
+            return await this.readDocxContent(file);
+        }
+
+        // 其他文件使用文本读取
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
 
@@ -281,6 +312,7 @@ class FileService {
             ".java": "☕",
             ".cpp": "⚙️",
             ".c": "⚙️",
+            ".docx": "📘",
         };
 
         return iconMap[extension] || "📄";
